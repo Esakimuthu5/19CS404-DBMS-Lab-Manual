@@ -1,3 +1,4 @@
+v
 # Experiment 1: Entity-Relationship (ER) Diagram
 
 ## 🎯 Objective:
@@ -45,123 +46,73 @@ Design a database for patient management, appointments, medical records, and bil
    - Why you chose the entities and relationships.
    - How you modeled prerequisites or billing.
 
-# ER Diagram Submission - ABDUL RAWOOF
+# ER Diagram Submission - Stephen raj Y
 
 ## Scenario Chosen:
-University / Hospital (choose one)
+University
 
 ## ER Diagram:
-![image](https://github.com/user-attachments/assets/94315a67-f38b-4ce7-9780-8de624bb94fe)
+![ER Diagram](er_diagram.png)
+![image](https://github.com/user-attachments/assets/dde8e2a5-650e-4c33-b5ce-6d8939a7aa43)
+
 
 ## Entities and Attributes:
-1. STUDENT: Admission No,Name,Date of Birth,Phone No,Email id
-2. PROGRAM: Program ID, Program Name, Department
-3. DEPARTMENT: Department id,Department Name
-4. COURSE: Course id,Course Name,Credits
-5. INSTRUCTOR: Staff id,Staff Name,Date Of Birth,PhoneNumber,Email id
-
-
-...
-
+```
+USER: ID, NAME, PHNO, ADDRESS
+REGISTRATION: STU_ID, REG_ID, DATE, TYPE, DATE
+STUDENT: REG_NO, ID, NAME, DOB, DEPT, YEAR, YEAR_ENROLLED, CREDITS, FEE
+PROGRAM: PROG_NAME, PROG_ID, CREDIT_POINTS
+COURSE: NAME, ID, PREREQUISIT
+ATTEMPTS: YEAR, SEM, MARK, GRADE
+MANAGEMENT: (This appears to be a relationship, not an entity with its own attributes in this diagram)
+ENROLL: (This appears to be a relationship, not an entity with its own attributes in this diagram)
+CONTAINS: (This appears to be a relationship, not an entity with its own attributes in this diagram)
+ENROLLMENT: STATUS (This appears to be a relationship, not an entity with its own attributes in this diagram)
+```
 ## Relationships and Constraints:
-1. Enrolls (STUDENT — PROGRAM)
-Cardinality: Many-to-One (Many students can enroll in one program)
 
-Participation: Total on STUDENT (every student must enroll in a program), partial on PROGRAM (not all programs may have enrolled students)
+```
+MANAGEMENT: USER manages REGISTRATION (Cardinality and Participation are not explicitly shown, but it implies
+a one-to-many relationship where one user can manage multiple registrations, and a registration is managed by 
+one user. Participation likely total for REGISTRATION and partial for USER).
 
-2. Governing Department (PROGRAM — DEPARTMENT)
-Cardinality: Many-to-One (Many programs are governed by one department)
+REGISTRATION: STUDENT has REGISTRATION (Cardinality and Participation are not explicitly shown, but it implies 
+a one-to-many relationship where one student can have multiple registrations, and a registration belongs to one
+student. Participation likely total for REGISTRATION and partial for STUDENT).
 
-Participation: Total on PROGRAM, partial on DEPARTMENT
+ENROLL: STUDENT enrolls in PROGRAM (Cardinality and Participation are not explicitly shown, but it implies a many-to-many 
+relationship since a student can enroll in multiple programs, and a program can have multiple students. Participation is likely total for both).
 
-3. Grouped (DEPARTMENT — PROGRAM)
-Cardinality: One-to-Many (One department can group multiple programs)
+CONTAINS: PROGRAM contains COURSE (Cardinality and Participation are not explicitly shown, but it implies a one-to-many
+relationship where one program can contain multiple courses, and a course belongs to one program. Participation likely total for COURSE and partial for PROGRAM).
 
-Participation: Partial on both sides (not all departments may have programs, and not all programs must be grouped under a department explicitly — this is slightly redundant with "Governing Department")
+ATTEMPTS: STUDENT has ATTEMPTS (Cardinality and Participation are not explicitly shown, but it implies a one-to-many relationship
+where one student can have multiple attempts for different courses, and an attempt belongs to one student. Participation likely 
+total for ATTEMPTS and partial for STUDENT).
 
-4. Catalogue (PROGRAM — COURSE)
-Cardinality: One-to-Many (One program can offer many courses)
+ENROLLMENT: STUDENT enrolls in COURSE (Cardinality and Participation are not explicitly shown, but it implies a many-to-many relationship
+with an attribute 'STATUS', indicating the enrollment status of a student in a course. Participation is likely total for both).
 
-Participation: Total on COURSE (every course must belong to a program), partial on PROGRAM
-
-5. Register (STUDENT — COURSE)
-Cardinality: Many-to-Many (A student can register in many courses, and each course can have many students)
-
-Participation: Partial on both
-
-6. Teaching (INSTRUCTOR — COURSE)
-Cardinality: One-to-Many (One instructor teaches multiple courses)
-
-Participation: Total on COURSE (each course must be taught by an instructor), partial on INSTRUCTOR
-
-...
+PREREQUISIT: COURSE has PREREQUISIT (This is a reflexive relationship on the COURSE entity, indicating that one course can be a
+prerequisite for another. Cardinality and Participation are not explicitly shown, but it's likely an optional many-to-many relationship,
+as a course can have multiple prerequisites and can be a prerequisite for multiple other courses, and some courses might not have any prerequisites).
+```
 
 ## Extension (Prerequisite / Billing):
-1. Modeling Prerequisites (for Courses):
-New Relationship: Prerequisite
+```
+Prerequisite: Prerequisites are modeled through a reflexive relationship on the COURSE entity. The attribute
+PREREQUISIT (which should likely be PREREQ_ID to reference another course's ID) in the COURSE entity indicates which course(s)
+are required before taking a particular course. This structure allows for defining chains or multiple prerequisites for a single course.
 
-Entities Involved: COURSE — COURSE (a recursive relationship)
-
-Meaning: A course may require completion of another course before enrollment.
-
-Structure:
-
-Relationship Name: Prerequisite
-
-Attributes: Possibly Required Grade or Prerequisite Type (optional)
-
-Cardinality: Many-to-Many (a course can have multiple prerequisites and be a prerequisite for multiple other courses)
-
-Participation: Partial on both (not all courses require or are prerequisites)
-
- Example:
-Course A ➝ prerequisite ➝ Course B
-Means: Course A requires Course B before a student can enroll.
- 2. Modeling Billing (for Students):
-New Entity: BILLING
-
-Entities Involved: STUDENT (1) — (M) BILLING
-
-Meaning: Each student can have multiple billing records (tuition, course fees, fines, etc.)
-
-Structure:
-
-Entity Name: BILLING
-
-Attributes: Billing_ID (PK), Student_ID (FK),Amount,Due_Date,Payment_Status
-
-Billing_Type (e.g., Tuition, Lab Fee, Late Fee)
-
-Cardinality: One-to-Many (One student can have multiple billing records)
-
-
+Billing: Billing information is partially modeled through the FEE attribute in the STUDENT entity. This suggests that each student
+has an associated fee. However, the diagram doesn't provide details on when or how these fees are applied (e.g., per program, per
+semester, per course) or any information about payment status, due dates, or billing history. To model billing more comprehensively,
+ you might need additional entities like BILL, PAYMENT, or a more detailed structure within the REGISTRATION or a new enrollment-specific entity to track financial aspects.
+```
 
 ## Design Choices:
-Entities Chosen:
-STUDENT: Core entity representing individuals enrolled in programs.
-PROGRAM: Groups of courses forming academic paths like BSc, MSc.
-DEPARTMENT: Academic units managing programs and instructors.
-
-COURSE: Units of instruction students register for.
-
-INSTRUCTOR: Staff responsible for teaching courses.
-
-Relationships Chosen:
-Enrolls: Links students to their academic programs.
-Catalogue: Shows which courses belong to which program.
-
-Register: Connects students with the courses they take.
-
-Teaching: Assigns instructors to courses.
-
-Governing Department: Indicates which department runs a program.
-
-Assumptions:
-Students enroll in one program.
-
-Courses belong to programs and are taught by one instructor.
-
-Students can take multiple courses, and each course can have many students.
-
-## RESULT
-Thus, to understand and apply the concepts of ER modeling by creating an ER diagram for a real-world application has been done successfully.
+```
+This ER diagram provides a good foundation for a student registration system, capturing key entities and their relationships.
+However, depending on the specific requirements, further refinement might be needed, especially in areas like billing and a clearer
+definition of the 'TYPE' attribute in the REGISTRATION entity.
+```
